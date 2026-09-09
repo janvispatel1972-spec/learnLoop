@@ -1,22 +1,19 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-require('dotenv').config();
+const dotenv = require("dotenv");
+const app = require("./src/app");
+const connectDB = require("./src/config/db");
+const seedDemoUsers = require("./src/utils/seedDemoUsers");
 
-const app = express();
+dotenv.config();
+
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
+const startServer = async () => {
+  await connectDB();
+  await seedDemoUsers();
 
-// Base Route
-app.get('/', (req, res) => {
-  res.json({ message: 'LearnLoop Backend API is running' });
-});
+  app.listen(PORT, () => {
+    console.log(`LearnLoop server running on port ${PORT}`);
+  });
+};
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+startServer();
